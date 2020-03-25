@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center">
+  <h1>Release Radar</h1>
+  <h3>Release Radar notifies you when your favorite artists release new albums</h3>
+  <h6>How does it work?</h6>
+  <p>You register an account and pick which artists you want to follow. When any of your chosen artists release a new
+    album, we notify you by email. We will never spam you or share your email to any third parties.</p>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="content-section">
+        Need An Account? <a class="ml-2" href="{{ url_for('users.register') }}">Register Now</a>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="content-section">
+        Already Have An Account? <a class="ml-2" href="{{ url_for('users.login') }}">Log In</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
