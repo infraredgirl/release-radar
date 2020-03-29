@@ -19,6 +19,8 @@ def create_app(config_class=config.Config):
     app.config.from_object(config_class)
 
     db.init_app(app)
+    with app.app_context():
+        db.create_all()
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
@@ -31,3 +33,6 @@ def create_app(config_class=config.Config):
     app.register_blueprint(errors)
 
     return app
+
+
+from releaseradar.models import User, Artist, subscriptions  # noqa: F401
