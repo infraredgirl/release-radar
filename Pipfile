@@ -25,6 +25,7 @@ flask-sqlalchemy = "*"
 flask-bcrypt = "*"
 flask-login = "*"
 flask-mail = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"
