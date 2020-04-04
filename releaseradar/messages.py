@@ -9,3 +9,6 @@ RESET_PASSWORD_EMAIL_SENT = ('An email has been sent with instructions to '
                              'reset your password.')
 TOKEN_INVALID = 'That is an invalid or expired token.'
 PASSWORD_UPDATED = 'Your password has been updated. You can now log in.'
+ARTIST_NOT_FOUND = 'Artist not found, please specify exact artist name.'
+ARTIST_ADDED = 'Artist successfully added.'
+ARTIST_ALREADY_FOLLOWED = 'You are already following that artist.'

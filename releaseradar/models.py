@@ -50,6 +50,8 @@ class User(db.Model, flask_login.UserMixin):
 class Artist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    spotify_uri = db.Column(db.String(100), unique=True, nullable=False)
+    spotify_url = db.Column(db.String(100), unique=True, nullable=False)
 
     def __repr__(self):
-        return f"Artist('{self.id}', '{self.name}')"
+        return f"Artist('{self.id}', '{self.spotify_uri}', '{self.name}')"

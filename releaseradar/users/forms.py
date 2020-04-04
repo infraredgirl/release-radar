@@ -91,6 +91,11 @@ class UpdateAccountForm(flask_wtf.FlaskForm):
                 raise wtforms.validators.ValidationError(messages.EMAIL_TAKEN)
 
 
+class ArtistAddForm(flask_wtf.FlaskForm):
+    artist_name = wtforms.StringField('Artist')
+    submit = wtforms.SubmitField('Add Artist')
+
+
 class RequestResetForm(flask_wtf.FlaskForm):
     email = wtforms.StringField(
         'Email',

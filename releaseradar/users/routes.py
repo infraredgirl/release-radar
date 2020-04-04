@@ -1,6 +1,8 @@
 import flask
 import flask_login
-from releaseradar import db, bcrypt, messages, models
+import sqlalchemy
+
+from releaseradar import db, bcrypt, messages, models, radar
 from releaseradar.users import forms, utils
 
 users = flask.Blueprint('users', __name__)
@@ -67,8 +69,41 @@ def account():
 @users.route("/artists")
 @flask_login.login_required
 def artists():
-    artists = flask_login.current_user.artists
-    return flask.render_template('artists.html', artists=artists)
+    user_artists = flask_login.current_user.artists
+    user_artists.sort(key=lambda a: a.name.lower())
+    return flask.render_template('artists.html', artists=user_artists)
+
+
+@users.route("/artist_add", methods=['GET', 'POST'])
+@flask_login.login_required
+def artist_add():
+    form = forms.ArtistAddForm()
+    if form.validate_on_submit():
+        artist = models.Artist.query.filter(
+            sqlalchemy.func.lower(
+                models.Artist.name
+            ) == sqlalchemy.func.lower(
+                form.artist_name.data
+            )
+        ).first()
+        if artist:
+            if artist in flask_login.current_user.artists:
+                flask.flash(messages.ARTIST_ALREADY_FOLLOWED, 'warning')
+                return flask.redirect(flask.url_for('users.artists'))
+            flask_login.current_user.artists.append(artist)
+            db.session.commit()
+            flask.flash(messages.ARTIST_ADDED, 'success')
+            return flask.redirect(flask.url_for('users.artists'))
+        artist = radar.find_artist(form.artist_name.data)
+        if artist:
+            db.session.add(artist)
+            flask_login.current_user.artists.append(artist)
+            db.session.commit()
+            flask.flash(messages.ARTIST_ADDED, 'success')
+            return flask.redirect(flask.url_for('users.artists'))
+        flask.flash(messages.ARTIST_NOT_FOUND, 'warning')
+        return flask.redirect(flask.url_for('users.artist_add'))
+    return flask.render_template('artist_add.html', form=form)
 
 
 @users.route("/reset_password", methods=['GET', 'POST'])

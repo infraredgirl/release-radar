@@ -2,14 +2,26 @@ import datetime
 
 import spotipy
 
+from releaseradar import models
+
 
 def find_artist(name):
+    client = spotipy.Spotify(
+        client_credentials_manager=spotipy.oauth2.SpotifyClientCredentials())
     results = client.search(q='artist:' + name, type='artist')
-    return results['artists']['items']
+    for artist in results['artists']['items']:
+        if artist['name'].lower() == name.lower():
+            return models.Artist(
+                name=artist['name'],
+                spotify_uri=artist['uri'],
+                spotify_url=artist['external_urls']['spotify']
+            )
 
 
-def get_artist_albums_released_after_date(client, artist, comparison_date):
-    results = client.artist_albums(artist)
+def get_artist_albums_released_after_date(artist_uri, comparison_date):
+    client = spotipy.Spotify(
+        client_credentials_manager=spotipy.oauth2.SpotifyClientCredentials())
+    results = client.artist_albums(artist_uri)
     all_albums = results['items']
     relevant_albums = []
 
@@ -32,13 +44,9 @@ def get_artist_albums_released_after_date(client, artist, comparison_date):
 
 
 if __name__ == '__main__':
-    client = spotipy.Spotify(
-        client_credentials_manager=spotipy.oauth2.SpotifyClientCredentials())
-
-    artist = 'spotify:artist:762310PdDnwsDxAQxzQkfX'
+    uri = 'spotify:artist:762310PdDnwsDxAQxzQkfX'
     comparison_date = datetime.date(2016, 7, 1)
-    albums = get_artist_albums_released_after_date(
-        client, artist, comparison_date)
+    albums = get_artist_albums_released_after_date(uri, comparison_date)
 
     for album in albums:
         print(album['release_date'], album['name'], album['type'])

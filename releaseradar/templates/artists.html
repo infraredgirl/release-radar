@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="content-section">
-  <legend class="border-bottom mb-4">My Artists</legend>
+  <legend class="border-bottom mb-4">My Artists | <a href="{{ url_for('users.artist_add') }}">Add a new artist</a>
+  </legend>
   {% if artists %}
-  {{ artists }}
+  <ul>
+    {% for artist in artists %}
+    <li><a href="{{artist.spotify_url}}" target="_blank">{{artist.name}}</a></li>
+    {% endfor %}
+  </ul>
   {% endif %}
 </div>
 {% endblock content %}
