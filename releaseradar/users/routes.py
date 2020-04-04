@@ -110,6 +110,17 @@ def artist_add():
     return flask.render_template('artist_add.html', form=form)
 
 
+@users.route("/artist_remove/<artist_id>", methods=['POST'])
+@flask_login.login_required
+def artist_remove(artist_id):
+    flask_login.current_user.artists.remove(
+        models.Artist.query.get_or_404(artist_id)
+    )
+    releaseradar.db.session.commit()
+    flask.flash(messages.ARTIST_REMOVED, 'success')
+    return flask.redirect(flask.url_for('users.artists'))
+
+
 @users.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():
     if flask_login.current_user.is_authenticated:

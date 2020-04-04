@@ -6,9 +6,41 @@
   {% if artists %}
   <ul>
     {% for artist in artists %}
-    <li><a href="{{artist.spotify_url}}" target="_blank">{{artist.name}}</a></li>
+    <li>
+      <a href="{{artist.spotify_url}}" target="_blank">{{artist.name}}</a>
+      <a href="#" class="text-danger" data-toggle="modal" data-target="#deleteModal"
+         data-remove-url="{{url_for('users.artist_remove', artist_id=artist.id)}}">Remove</a>
+    </li>
     {% endfor %}
   </ul>
   {% endif %}
+  <!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Remove this artist?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form id="deleteForm" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#deleteModal').on('show.bs.modal', function (e) {
+            let removeUrl = $(e.relatedTarget).data('remove-url');
+            $("#deleteForm").attr('action', removeUrl);
+        });
+    });
+</script>
 {% endblock content %}
