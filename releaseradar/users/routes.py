@@ -2,8 +2,12 @@ import flask
 import flask_login
 import sqlalchemy
 
-from releaseradar import db, bcrypt, messages, models, radar
-from releaseradar.users import forms, utils
+import releaseradar
+from releaseradar import messages
+from releaseradar import models
+from releaseradar import radar
+from releaseradar.users import forms
+from releaseradar.users import utils
 
 users = flask.Blueprint('users', __name__)
 
@@ -14,13 +18,13 @@ def register():
         return flask.redirect(flask.url_for('main.home'))
     form = forms.RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(
+        hashed_password = releaseradar.bcrypt.generate_password_hash(
             form.password.data).decode('utf-8')
         user = models.User(username=form.username.data,
                            email=form.email.data,
                            password=hashed_password)
-        db.session.add(user)
-        db.session.commit()
+        releaseradar.db.session.add(user)
+        releaseradar.db.session.commit()
         flask.flash(messages.ACCOUNT_CREATED, 'success')
         return flask.redirect(flask.url_for('users.login'))
     return flask.render_template('register.html', title='Register', form=form)
@@ -33,7 +37,7 @@ def login():
     form = forms.LoginForm()
     if form.validate_on_submit():
         user = models.User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(
+        if user and releaseradar.bcrypt.check_password_hash(
                 user.password, form.password.data):
             flask_login.login_user(user, remember=form.remember.data)
             next_page = flask.request.args.get('next')
@@ -57,7 +61,7 @@ def account():
     if form.validate_on_submit():
         flask_login.current_user.username = form.username.data
         flask_login.current_user.email = form.email.data
-        db.session.commit()
+        releaseradar.db.session.commit()
         flask.flash(messages.ACCOUNT_UPDATED, 'success')
         return flask.redirect(flask.url_for('users.account'))
     elif flask.request.method == 'GET':
@@ -91,14 +95,14 @@ def artist_add():
                 flask.flash(messages.ARTIST_ALREADY_FOLLOWED, 'warning')
                 return flask.redirect(flask.url_for('users.artists'))
             flask_login.current_user.artists.append(artist)
-            db.session.commit()
+            releaseradar.db.session.commit()
             flask.flash(messages.ARTIST_ADDED, 'success')
             return flask.redirect(flask.url_for('users.artists'))
         artist = radar.find_artist(form.artist_name.data)
         if artist:
-            db.session.add(artist)
+            releaseradar.db.session.add(artist)
             flask_login.current_user.artists.append(artist)
-            db.session.commit()
+            releaseradar.db.session.commit()
             flask.flash(messages.ARTIST_ADDED, 'success')
             return flask.redirect(flask.url_for('users.artists'))
         flask.flash(messages.ARTIST_NOT_FOUND, 'warning')
@@ -131,10 +135,10 @@ def reset_token(token):
         return flask.redirect(flask.url_for('users.reset_request'))
     form = forms.ResetPasswordForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(
+        hashed_password = releaseradar.bcrypt.generate_password_hash(
             form.password.data).decode('utf-8')
         user.password = hashed_password
-        db.session.commit()
+        releaseradar.db.session.commit()
         flask.flash(messages.PASSWORD_UPDATED, 'success')
         return flask.redirect(flask.url_for('users.login'))
     return flask.render_template('reset_token.html',

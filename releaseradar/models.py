@@ -1,32 +1,45 @@
-import itsdangerous
 import flask
-from releaseradar import db, login_manager
 import flask_login
+import itsdangerous
+
+import releaseradar
 
 
-@login_manager.user_loader
+@releaseradar.login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-subscriptions = db.Table(
+subscriptions = releaseradar.db.Table(
     'subscriptions',
-    db.Column(
-        'user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-    db.Column(
-        'artist_id', db.Integer, db.ForeignKey('artist.id'), primary_key=True)
+    releaseradar.db.Column(
+        'user_id', releaseradar.db.Integer,
+        releaseradar.db.ForeignKey('user.id'),
+        primary_key=True
+    ),
+    releaseradar.db.Column(
+        'artist_id',
+        releaseradar.db.Integer,
+        releaseradar.db.ForeignKey('artist.id'),
+        primary_key=True
+    )
 )
 
 
-class User(db.Model, flask_login.UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(60), nullable=False)
-    artists = db.relationship('Artist',
-                              secondary=subscriptions,
-                              lazy='subquery',
-                              backref=db.backref('users', lazy=True))
+class User(releaseradar.db.Model, flask_login.UserMixin):
+    id = releaseradar.db.Column(releaseradar.db.Integer, primary_key=True)
+    username = releaseradar.db.Column(
+        releaseradar.db.String(20), unique=True, nullable=False)
+    email = releaseradar.db.Column(
+        releaseradar.db.String(120), unique=True, nullable=False)
+    password = releaseradar.db.Column(
+        releaseradar.db.String(60), nullable=False)
+    artists = releaseradar.db.relationship(
+        'Artist',
+        secondary=subscriptions,
+        lazy='subquery',
+        backref=releaseradar.db.backref('users', lazy=True)
+    )
 
     def get_reset_token(self, expires_sec=1800):
         s = itsdangerous.TimedJSONWebSignatureSerializer(
@@ -47,11 +60,13 @@ class User(db.Model, flask_login.UserMixin):
         return f"User('{self.username}', '{self.email}')"
 
 
-class Artist(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    spotify_uri = db.Column(db.String(100), unique=True, nullable=False)
-    spotify_url = db.Column(db.String(100), unique=True, nullable=False)
+class Artist(releaseradar.db.Model):
+    id = releaseradar.db.Column(releaseradar.db.Integer, primary_key=True)
+    name = releaseradar.db.Column(releaseradar.db.String(100), nullable=False)
+    spotify_uri = releaseradar.db.Column(
+        releaseradar.db.String(100), unique=True, nullable=False)
+    spotify_url = releaseradar.db.Column(
+        releaseradar.db.String(100), unique=True, nullable=False)
 
     def __repr__(self):
         return f"Artist('{self.id}', '{self.spotify_uri}', '{self.name}')"

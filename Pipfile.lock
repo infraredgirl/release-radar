@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "758d0033b14041b1af573b45227c08fe65f623f9427e45a4da672df563bede8e"
+            "sha256": "3fe22d2abcc2cd1d4a69b953420f2d83ef77c2be557d69aa2f78b194bd0aaff5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -114,7 +114,6 @@
                 "sha256:45681a117ecc81e870cbf1262835ae4af5e7a8b08e40b944a8a6e6b895914cfb",
                 "sha256:49356e766643ad15072a789a20915d3c91dc89fd313ccd71802303fd67e4deca"
             ],
-            "index": "pypi",
             "version": "==3.7.9"
         },
         "flask": {
@@ -170,6 +169,14 @@
             ],
             "index": "pypi",
             "version": "==20.0.4"
+        },
+        "hacking": {
+            "hashes": [
+                "sha256:361c04980d535d5e8a3ec7826c1553a87026cb18113822c76a2adf21f65b1faa",
+                "sha256:febff65bac1b5f4bff95cf3299e885bee94fde9a48edfec0e4f0c36f9c9805fa"
+            ],
+            "index": "pypi",
+            "version": "==3.0.0"
         },
         "idna": {
             "hashes": [

@@ -1,6 +1,7 @@
 import flask
 import flask_mail
-from releaseradar import mail
+
+import releaseradar
 
 
 def send_reset_email(user):
@@ -14,4 +15,4 @@ def send_reset_email(user):
 
 If you did not make this request, you can safely ignore this email.
 '''
-    mail.send(msg)
+    releaseradar.mail.send(msg)

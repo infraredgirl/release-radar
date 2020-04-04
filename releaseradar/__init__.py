@@ -1,8 +1,9 @@
 import flask
-import flask_sqlalchemy
 import flask_bcrypt
 import flask_login
 import flask_mail
+import flask_sqlalchemy
+
 from releaseradar import config
 
 
@@ -25,9 +26,10 @@ def create_app(config_class=config.Config):
     login_manager.init_app(app)
     mail.init_app(app)
 
-    from releaseradar.users.routes import users
-    from releaseradar.main.routes import main
     from releaseradar.errors.handlers import errors
+    from releaseradar.main.routes import main
+    from releaseradar.users.routes import users
+
     app.register_blueprint(users)
     app.register_blueprint(main)
     app.register_blueprint(errors)

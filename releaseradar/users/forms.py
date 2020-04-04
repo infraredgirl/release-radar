@@ -1,8 +1,9 @@
+import flask_login
 import flask_wtf
 import wtforms
-import flask_login
 
-from releaseradar import messages, models
+from releaseradar import messages
+from releaseradar import models
 
 
 class RegistrationForm(flask_wtf.FlaskForm):
