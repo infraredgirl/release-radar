@@ -61,8 +61,14 @@ def account():
     elif flask.request.method == 'GET':
         form.username.data = flask_login.current_user.username
         form.email.data = flask_login.current_user.email
-        artists = flask_login.current_user.artists
-    return flask.render_template('account.html', form=form, artists=artists)
+    return flask.render_template('account.html', form=form)
+
+
+@users.route("/artists")
+@flask_login.login_required
+def artists():
+    artists = flask_login.current_user.artists
+    return flask.render_template('artists.html', artists=artists)
 
 
 @users.route("/reset_password", methods=['GET', 'POST'])
